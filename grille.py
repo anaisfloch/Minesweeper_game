@@ -66,7 +66,7 @@ class Grille():
                 if grille_test[i,j]:
                     self.grille[i, j] = CaseBombe((i,j), self)
                 else :
-                    self.grille[i, j] = CaseVide((i,j), self, calcul_voisins = False)
+                    self.grille[i, j] = CaseVide((i,j), self, voisins_calcules = False)
                     
         # Calcul des bombes voisines
         for i in range(self.taille[0]):
