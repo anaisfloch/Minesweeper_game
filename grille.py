@@ -46,7 +46,8 @@ class Grille():
             self.bombe = 99
         else:
             raise ValueError("Le code de difficulté doit être de 0 (facile), 1 (moyen) ou 2 (difficile).")
-            
+         
+        # Placement des bombes    
         self.grille = np.empty(self.taille)
         nb_case = self.taille[0] * self.taille [1]
         place_bombe = np.random.choice(nb_case, self.bombe, replace = False)
@@ -55,17 +56,33 @@ class Grille():
             # i+1 pour prendre en compte case 0 dans le compte des lignes
             coord_bombe.append(((i+1)//self.taille [1] - 1, i % self.taille[0]))
             
-        # Remplir la grille
+        # Remplissage de la grille
         for i in range(self.taille[0]):
             for j in range(self.taille[1]):
                 if (i,j) in coord_bombe:
                     self.grille[i, j] = CaseBombe((i,j), self)
                 else :
                     self.grille[i, j] = CaseVide((i,j), self)
-            
+                    
+        def afficher(self):
+            for i in range(self.taille[0]):
+                ligne = []
+                for j in range(self.taille[1]):
+                    c = self.grille[i,j]
+                    if c.drapeau == 1 :
+                        ligne.append("*")
+                    elif not c.decouverte:
+                        ligne.append("_")
+                    elif isinstance(c, CaseBombe):
+                        ligne.append("BOUM")
+                    elif c.nbr_bombes_voisines > 0:
+                        ligne.append(str(c.nbr_bombes_voisines))
+                    else:
+                        ligne.append("0")
+                print(" ".join(ligne))
+            print()          
          
         
-    
 
 ### Définition d'une case de jeu ###
 
@@ -110,6 +127,8 @@ class CaseBombe(Case):
             print(f"Case {self.position} marquée, ne peut être découverte")
         else: 
             print(f"MACRON EXPLOSION (perdu nullos)")
+            self.grille.afficher()
+            exit()
             
     def drapeau(self, position):
         #ajouter un drapeau sur la case, set drapeau = True
@@ -148,25 +167,8 @@ class CaseVide(Case):
             (i,j)
             for i in range(x-1, x+2)
             for j in range(y-1, y+2)
-            if (0 <= i <= self.grille.taille[0])
-            and (0 <= j <= self.grille.taille[1])
-            and (i,j) != (x,y)
+            if (0 <= i <= self.grille.taille[0]) and (0 <= j <= self.grille.taille[1]) and (i,j) != (x,y)
         ]
         return sum(isinstance(self.grille.grille[i,j], CaseBombe) for i, j in voisins)
     
     
-def afficher(self):
-    for i in range(self.taille[0]):
-        ligne = []
-        for j in range(self.taille[1]):
-            c = self.grille[i,j]
-            if c.drapeau == 1 :
-                ligne.append("*")
-            elif not c.decouverte:
-                ligne.append("_")
-            elif isinstance(c, CaseBombe):
-                ligne.append("BOUM")
-            elif c.nbr_bombes_voisines > 0:
-                ligne.append(str(c.nbr_bombes_voisines))
-            else:
-                ligne.append("0")
