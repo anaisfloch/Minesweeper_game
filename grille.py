@@ -61,9 +61,9 @@ class Grille():
         for i in range(self.taille[0]):
             for j in range(self.taille[1]):
                 if (i,j) in coord_bombe:
-                    self.grille[i, j] = CaseBombe((i,j))
+                    self.grille[i, j] = CaseBombe((i,j), self)
                 else :
-                    self.grille[i, j] = CaseVide((i,j))
+                    self.grille[i, j] = CaseVide((i,j), self)
             
          
         
@@ -73,7 +73,7 @@ class Grille():
 
 class Case():
     
-    def __init__(self, position, drapeau = 0):
+    def __init__(self, position, grille, drapeau = 0):
         """Initialise une case de la grille de jeu du démineur dans un 
         certain état et une position particulière.
         
@@ -81,11 +81,15 @@ class Case():
         ---------
         position : tuple
             Coordonnées de la case dans la grille de jeu.
+        grille : array
+            Matrice à laquelle la case est rattachée.
         drapeau : int
             Indique la présence ou non d'un drapeau sur la case. Par défaut 
             égal à 0'
         """
         self.drapeau = drapeau
+        self.grille = grille
+        self.position = position
     
     @abstractmethod
     def decouvrir(case):
@@ -98,8 +102,8 @@ class Case():
 
 class CaseBombe(Case):
     
-    def __init__(self, position, drapeau = 0):
-        super().__init__(position, drapeau = 0)
+    def __init__(self, position, grille, drapeau = 0):
+        super().__init__(position, grille, drapeau = 0)
         
     def decouvrir(self, position):
         #terminer la partie sauf s'il y a déjà un drapeau = True 
@@ -107,13 +111,14 @@ class CaseBombe(Case):
     
     def drapeau(self, position):
         #ajouter un drapeau sur la case, set drapeau = True
-        self.drapeau = True
+        self.drapeau = 1
         pass
     
 class CaseVide(Case):
     
-    def __init__(self, position, drapeau = 0):
-        super().__init__(position, drapeau = 0)
+    def __init__(self, position, grille, drapeau = 0):
+        super().__init__(position, grille, drapeau = 0)
+        self.nbr_bombes_voisines = self.get_nbr_bomb()
         
     def decouvrir(self, position):
         #decouvrir la case et afficher le nombre de bombes proches trouvé par get_nbr_bomb()
@@ -121,11 +126,18 @@ class CaseVide(Case):
     
     def drapeau(self, position, drapeau = 0):
         #ajouter un drapeau sur la case, set drapeau = True
-        self.drapeau = True
+        self.drapeau = 1
         pass
     
-    def get_nbr_bomb(self, position):
+    def get_nbr_bomb(self):
         #return le nombre de bombes environnantes
-        voisins = []
-        
-        pass
+        x, y = self.position
+        voisins = [
+            (i,j)
+            for i in range(x-1, x+2)
+            for j in range(y-1, y+2)
+            if (0 <= i <= self.grille.taille[0])
+            and (0 <= j <= self.grille.taille[1])
+            and (i,j) != (x,y)
+        ]
+        return sum(isinstance(self.grille.grille[i,j], CaseBombe) for i, j in voisins)
