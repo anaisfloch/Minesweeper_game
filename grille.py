@@ -19,16 +19,21 @@ class Grille():
         
         Paramètres
         ---------
-        taille : int
-            Nombre de cases présentes dans la grille.
+        taille : tuple
+            Longeur et largeur de la grille.
         bombe : int
             Nombre de bombes présentes dans la grille.
         """
-        pass
+        self.taille = taille
+        self.bombe = bombe
+        
+    
+
+### Définition d'une case de jeu ###
 
 class Case():
     
-    def __init__(self, position, drapeau = False):
+    def __init__(self, position, drapeau = 0):
         """Initialise une case de la grille de jeu du démineur dans un 
         certain état et une position particulière.
         
@@ -36,21 +41,25 @@ class Case():
         ---------
         position : tuple
             Coordonnées de la case dans la grille de jeu.
-        drapeau : bool
+        drapeau : int
             Indique la présence ou non d'un drapeau sur la case. Par défaut 
-            égal à False'
+            égal à 0'
         """
         self.drapeau = drapeau
     
     @abstractmethod
     def decouvrir(case):
         pass
+    
+    @abstractmethod
+    def drapeau(self, position):
+        pass
 
 
 class CaseBombe(Case):
     
-    def __init__(self, position, drapeau = False):
-        super().__init__(position, drapeau = False)
+    def __init__(self, position, drapeau = 0):
+        super().__init__(position, drapeau = 0)
         
     def decouvrir(self, position):
         #terminer la partie sauf s'il y a déjà un drapeau = True 
@@ -63,14 +72,14 @@ class CaseBombe(Case):
     
 class CaseVide(Case):
     
-    def __init__(self, position, drapeau = False):
-        super().__init__(position, drapeau = False)
+    def __init__(self, position, drapeau = 0):
+        super().__init__(position, drapeau = 0)
         
     def decouvrir(self, position):
         #decouvrir la case et afficher le nombre de bombes proches trouvé par get_nbr_bomb()
         pass
     
-    def drapeau(self, position, drapeau = False):
+    def drapeau(self, position, drapeau = 0):
         #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = True
         pass
