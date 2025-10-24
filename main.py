@@ -24,8 +24,11 @@ def jouer():
     g = Grille(difficulte)
     
     while True: 
-        g.afficher
-        action = input("Action (d = découvrir, p = drapeau) : ")
+        g.afficher()
+        action = input("Action (d = découvrir, p = drapeau, q = quitter) : ")
+        if action == 'q':
+            print("Adieu.")
+            break
         try:
             x = int(input("Ligne : "))
             y = int(input("Colonne : "))
