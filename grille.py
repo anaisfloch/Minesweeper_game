@@ -9,8 +9,6 @@ Created on Fri Oct 24 09:05:11 2025
 import numpy as np
 from abc import abstractmethod
 
-A = [[1,1],[2,2],[3,3],[4,4]],[[5,5],[6,6],[7,7],[8,8]]
-print (A[1,4])
 
 ### Définition d'une grille de jeu ###
 
@@ -54,10 +52,10 @@ class Grille():
         place_bombe = np.random.choice(nb_case, self.bombe, replace = False)
         coord_bombe = []
         for i in place_bombe:
-            #i+1 pour prendre en compte case 0 dans le compte des lignes
+            # i+1 pour prendre en compte case 0 dans le compte des lignes
             coord_bombe.append(((i+1)//self.taille [1] - 1, i % self.taille[0]))
             
-        
+        # Remplir la grille
         for i in range(self.taille[0]):
             for j in range(self.taille[1]):
                 if (i,j) in coord_bombe:
