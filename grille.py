@@ -153,3 +153,20 @@ class CaseVide(Case):
             and (i,j) != (x,y)
         ]
         return sum(isinstance(self.grille.grille[i,j], CaseBombe) for i, j in voisins)
+    
+    
+def afficher(self):
+    for i in range(self.taille[0]):
+        ligne = []
+        for j in range(self.taille[1]):
+            c = self.grille[i,j]
+            if c.drapeau == 1 :
+                ligne.append("*")
+            elif not c.decouverte:
+                ligne.append("_")
+            elif isinstance(c, CaseBombe):
+                ligne.append("BOUM")
+            elif c.nbr_bombes_voisines > 0:
+                ligne.append(str(c.nbr_bombes_voisines))
+            else:
+                ligne.append("0")
