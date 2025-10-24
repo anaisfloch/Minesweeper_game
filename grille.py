@@ -13,19 +13,50 @@ from abc import abstractmethod
 
 class Grille():
     
-    def __init__(self, taille, bombe):
+    def __init__(self, grille, taille, bombe, difficulte):
         """Initialise la grille de jeu du démineur avec une certaine 
         taille et un nombre de bombes en fonction de la difficulté choisie.
         
         Paramètres
         ---------
+        grille : array
+            Matrice vide représentant la grille de jeu.
         taille : tuple
             Longeur et largeur de la grille.
         bombe : int
             Nombre de bombes présentes dans la grille.
+        difficulte : int
+            Codes de difficulté :
+                0 - facile, 8x8, 10 bombes
+                1 - moyen, 16x16, 40 bombes
+                2 - difficile, 30x16, 99 bombes
         """
-        self.taille = taille
-        self.bombe = bombe
+        self.difficulte = difficulte
+        
+        # Choix de config en fonction de la difficulté
+        if difficulte == 0:
+            self.taille = (8,8)
+            self.bombe = 10
+        elif difficulte == 1:
+            self.taille = (16,16)
+            self.bombe = 40
+        elif difficulte == 2:
+            self.taille = (16,30)
+            self.bombe = 99
+        else:
+            raise ValueError("Le code de difficulté doit être de 0 (facile), 1 (moyen) ou 2 (difficile).")
+            
+        self.grille = np.empty(self.taille)
+        nb_case = taille[0] * taille [1]
+        #position_bombe = np.random.choice(nb_case, self.bombe, replace = False)
+        
+
+        
+        for i in range(taille[0]):
+            for j in range(taille[1]):
+                pass
+            
+        pass 
         
     
 
@@ -86,4 +117,6 @@ class CaseVide(Case):
     
     def get_nbr_bomb(self, position):
         #return le nombre de bombes environnantes
+        voisins = []
+        
         pass
