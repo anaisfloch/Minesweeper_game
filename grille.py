@@ -88,6 +88,7 @@ class Case():
         self.drapeau = drapeau
         self.grille = grille
         self.position = position
+        self.decouverte = False
     
     @abstractmethod
     def decouvrir(case):
@@ -105,12 +106,15 @@ class CaseBombe(Case):
         
     def decouvrir(self, position):
         #terminer la partie sauf s'il y a déjà un drapeau = True 
-        pass
-    
+        if self.drapeau == 1:
+            print(f"Case {self.position} marquée, ne peut être découverte")
+        else: 
+            print(f"MACRON EXPLOSION (perdu nullos)")
+            
     def drapeau(self, position):
         #ajouter un drapeau sur la case, set drapeau = True
-        self.drapeau = 1
-        pass
+        self.drapeau = 1 - self.drapeau
+        
     
 class CaseVide(Case):
     
@@ -119,13 +123,23 @@ class CaseVide(Case):
         self.nbr_bombes_voisines = self.get_nbr_bomb()
         
     def decouvrir(self, position):
-        #decouvrir la case et afficher le nombre de bombes proches trouvé par get_nbr_bomb()
-        pass
+        if self.drapeau == 1 or self.decouverte :
+            print(f"Cette case ne peut être découverte")
+        else: 
+            self.decouverte = True
+            x, y = self.position
+            if self.nbr_bombes_voisines > 0:
+                print(f"Case {self.position} : {self.nbr_bombes_voisines} bombes voisines.")
+            else :
+                print(f"Case {self.position} vide : Découverte automatique des cases voisines.")
+                for i in range(x-1, x+2):
+                    for j in range(y-1, y+2):
+                        if (0 <= i <= self.grille.taille[0]) and (0 <= j <= self.grille.taille[1]) and (i,j) != (x,y):
+                            self.grille.grille[i,j].decouvrir
     
     def drapeau(self, position, drapeau = 0):
         #ajouter un drapeau sur la case, set drapeau = True
-        self.drapeau = 1
-        pass
+        self.drapeau = 1 - self.drapeau
     
     def get_nbr_bomb(self):
         #return le nombre de bombes environnantes
