@@ -66,14 +66,14 @@ class Grille():
                 if grille_test[i,j]:
                     self.grille[i, j] = CaseBombe((i,j), self)
                 else :
-                    self.grille[i, j] = CaseVide((i,j), self, voisins = False)
+                    self.grille[i, j] = CaseVide((i,j), self, calcul_voisins = False)
                     
         # Calcul des bombes voisines
         for i in range(self.taille[0]):
             for j in range(self.taille[1]):
                 case = self.grille[i,j]
                 if isinstance(case, CaseVide):
-                    case.nbr_bombes_voisines = case.get_nbr_bomb
+                    case.nbr_bombes_voisines = case.get_nbr_bomb()
                     
     def afficher(self):
             for i in range(self.taille[0]):
@@ -104,9 +104,9 @@ class Grille():
                 elif isinstance(c, CaseVide) and (c.nbr_bombes_voisines >= 0):
                     ligne.append(str(c.nbr_bombes_voisines))
                 else:
-                    ligne.append("0")
-                print(" ".join(ligne))
-            print() 
+                    ligne.append("?")
+            print(" ".join(ligne))
+        print() 
                     
          
         
@@ -165,26 +165,29 @@ class CaseBombe(Case):
     
 class CaseVide(Case):
     
-    def __init__(self, position, grille, drapeau = 0, voisins = True):
+    def __init__(self, position, grille, drapeau = 0, voisins_calcules = True):
         super().__init__(position, grille, drapeau)
-        self.nbr_bombes_voisines = self.get_nbr_bomb()
-        if voisins:
+        self.nbr_bombes_voisines = 0 if voisins_calcules else None
+        if voisins_calcules:
             self.nbr_bombes_voisines = self.get_nbr_bomb()
         
     def decouvrir(self):
         if self.drapeau == 1 or self.decouverte :
-            print(f"Rien à faire ici.")
-        else: 
-            self.decouverte = True
-            x, y = self.position
-            if self.nbr_bombes_voisines > 0:
-                print(f"Case {self.position} : {self.nbr_bombes_voisines} bombes voisines.")
-            else :
-                print(f"Case {self.position} vide : Découverte automatique des cases voisines.")
-                for i in range(x-1, x+2):
-                    for j in range(y-1, y+2):
-                        if (0 <= i < self.grille.taille[0]) and (0 <= j < self.grille.taille[1]) and (i,j) != (x,y):
-                            self.grille.grille[i,j].decouvrir
+            return
+        self.decouverte = True
+        
+        # Au cas-où ça n'a pas marché avant
+        if self.nbr_bombes_voisines is None:
+            self.nbr_bombes_voisines = self.get_nbr_bomb()
+        if self.nbr_bombes_voisines > 0:
+            print(f"Case {self.position} : {self.nbr_bombes_voisines} bombes voisines.")
+            
+        # Découvrir les cases vides adjointes
+        x, y = self.position
+        for i in range(x-1, x+2):
+            for j in range(y-1, y+2):
+                if (0 <= i < self.grille.taille[0]) and (0 <= j < self.grille.taille[1]) and (i,j) != (x,y):
+                    self.grille.grille[i,j].decouvrir()
     
     def ajouter_drapeau(self):
         #ajouter un drapeau sur la case, set drapeau = True
