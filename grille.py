@@ -16,7 +16,7 @@ print (A[1,4])
 
 class Grille():
     
-    def __init__(self, grille, taille, bombe, difficulte):
+    def __init__(self, difficulte):
         """Initialise la grille de jeu du démineur avec une certaine 
         taille et un nombre de bombes en fonction de la difficulté choisie.
         
@@ -24,7 +24,7 @@ class Grille():
         ---------
         grille : array
             Matrice vide représentant la grille de jeu.
-        taille : tuple
+        taille :  tuple
             Longeur et largeur de la grille.
         bombe : int
             Nombre de bombes présentes dans la grille.
