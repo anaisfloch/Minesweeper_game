@@ -22,6 +22,7 @@ def jouer():
             print("Tu fais n'importe quoi recommence.")
     
     g = Grille(difficulte)
+    g.afficher_solution()
     
     while True: 
         g.afficher()
