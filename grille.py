@@ -53,20 +53,20 @@ class Grille():
         # Placement aléatoire des bombes
         nb_case = self.taille[0] * self.taille [1]
         place_bombe = np.random.choice(nb_case, self.bombe, replace = False)
-        coord_bombe = []
-        for i in place_bombe:
-            # i+1 pour prendre en compte case 0 dans le compte des lignes
-            coord_bombe.append(((i+1)//self.taille [1] - 1, i % self.taille[0]))
-            
+        colonnes = self.taille[1]
+        coord_bombe = [(i // colonnes, i % colonnes)for i in place_bombe]
+        
+        
         # Remplissage de la grille
         for i in range(self.taille[0]):
             for j in range(self.taille[1]):
                 if (i,j) in coord_bombe:
+             
                     self.grille[i, j] = CaseBombe((i,j), self)
                 else :
                     self.grille[i, j] = CaseVide((i,j), self)
                     
-        def afficher(self):
+    def afficher(self):
             for i in range(self.taille[0]):
                 ligne = []
                 for j in range(self.taille[1]):
@@ -110,11 +110,11 @@ class Case():
         self.decouverte = False
     
     @abstractmethod
-    def decouvrir(case):
+    def decouvrir(self):
         pass
     
     @abstractmethod
-    def drapeau(self, position):
+    def ajouter_drapeau(self):
         pass
 
 
@@ -132,7 +132,7 @@ class CaseBombe(Case):
             self.grille.afficher()
             exit()
             
-    def drapeau(self):
+    def ajouter_drapeau(self):
         #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = 1 - self.drapeau
         
@@ -158,7 +158,7 @@ class CaseVide(Case):
                         if (0 <= i <= self.grille.taille[0]) and (0 <= j <= self.grille.taille[1]) and (i,j) != (x,y):
                             self.grille.grille[i,j].decouvrir
     
-    def drapeau(self):
+    def ajouter_drapeau(self):
         #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = 1 - self.drapeau
     
@@ -169,7 +169,7 @@ class CaseVide(Case):
             (i,j)
             for i in range(x-1, x+2)
             for j in range(y-1, y+2)
-            if (0 <= i <= self.grille.taille[0]) and (0 <= j <= self.grille.taille[1]) and (i,j) != (x,y)
+            if (0 <= i < self.grille.taille[0]) and (0 <= j < self.grille.taille[1]) and (i,j) != (x,y)
         ]
         return sum(isinstance(self.grille.grille[i,j], CaseBombe) for i, j in voisins)
     

@@ -40,7 +40,7 @@ def jouer():
         if action == "d":
             case.decouvrir()
         elif action == "p":
-            case.drapeau()
+            case.ajouter_drapeau()
         else:
             print("Action invalide.")
         
