@@ -47,8 +47,10 @@ class Grille():
         else:
             raise ValueError("Le code de difficulté doit être de 0 (facile), 1 (moyen) ou 2 (difficile).")
          
-        # Placement des bombes    
-        self.grille = np.empty(self.taille)
+        # Création d'un tableau objet    
+        self.grille = np.empty(self.taille, dtype = object)
+        
+        # Placement aléatoire des bombes
         nb_case = self.taille[0] * self.taille [1]
         place_bombe = np.random.choice(nb_case, self.bombe, replace = False)
         coord_bombe = []
@@ -75,7 +77,7 @@ class Grille():
                         ligne.append("_")
                     elif isinstance(c, CaseBombe):
                         ligne.append("BOUM")
-                    elif c.nbr_bombes_voisines > 0:
+                    elif isinstance(c, CaseVide) and c.nbr_bombes_voisines > 0:
                         ligne.append(str(c.nbr_bombes_voisines))
                     else:
                         ligne.append("0")
@@ -119,9 +121,9 @@ class Case():
 class CaseBombe(Case):
     
     def __init__(self, position, grille, drapeau = 0):
-        super().__init__(position, grille, drapeau = 0)
+        super().__init__(position, grille, drapeau)
         
-    def decouvrir(self, position):
+    def decouvrir(self):
         #terminer la partie sauf s'il y a déjà un drapeau = True 
         if self.drapeau == 1:
             print(f"Case {self.position} marquée, ne peut être découverte")
@@ -130,7 +132,7 @@ class CaseBombe(Case):
             self.grille.afficher()
             exit()
             
-    def drapeau(self, position):
+    def drapeau(self):
         #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = 1 - self.drapeau
         
@@ -138,12 +140,12 @@ class CaseBombe(Case):
 class CaseVide(Case):
     
     def __init__(self, position, grille, drapeau = 0):
-        super().__init__(position, grille, drapeau = 0)
+        super().__init__(position, grille, drapeau)
         self.nbr_bombes_voisines = self.get_nbr_bomb()
         
-    def decouvrir(self, position):
+    def decouvrir(self):
         if self.drapeau == 1 or self.decouverte :
-            print(f"Cette case ne peut être découverte")
+            print(f"Rien à faire ici.")
         else: 
             self.decouverte = True
             x, y = self.position
@@ -156,7 +158,7 @@ class CaseVide(Case):
                         if (0 <= i <= self.grille.taille[0]) and (0 <= j <= self.grille.taille[1]) and (i,j) != (x,y):
                             self.grille.grille[i,j].decouvrir
     
-    def drapeau(self, position, drapeau = 0):
+    def drapeau(self):
         #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = 1 - self.drapeau
     
