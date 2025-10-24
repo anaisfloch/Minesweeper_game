@@ -9,6 +9,9 @@ Created on Fri Oct 24 09:05:11 2025
 import numpy as np
 from abc import abstractmethod
 
+A = [[1,1],[2,2],[3,3],[4,4]],[[5,5],[6,6],[7,7],[8,8]]
+print (A[1,4])
+
 ### Définition d'une grille de jeu ###
 
 class Grille():
@@ -47,16 +50,22 @@ class Grille():
             raise ValueError("Le code de difficulté doit être de 0 (facile), 1 (moyen) ou 2 (difficile).")
             
         self.grille = np.empty(self.taille)
-        nb_case = taille[0] * taille [1]
-        #position_bombe = np.random.choice(nb_case, self.bombe, replace = False)
-        
-
-        
-        for i in range(taille[0]):
-            for j in range(taille[1]):
-                pass
+        nb_case = self.taille[0] * self.taille [1]
+        place_bombe = np.random.choice(nb_case, self.bombe, replace = False)
+        coord_bombe = []
+        for i in place_bombe:
+            #i+1 pour prendre en compte case 0 dans le compte des lignes
+            coord_bombe.append(((i+1)//self.taille [1] - 1, i % self.taille[0]))
             
-        pass 
+        
+        for i in range(self.taille[0]):
+            for j in range(self.taille[1]):
+                if (i,j) in coord_bombe:
+                    self.grille[i, j] = CaseBombe((i,j))
+                else :
+                    self.grille[i, j] = CaseVide((i,j))
+            
+         
         
     
 
