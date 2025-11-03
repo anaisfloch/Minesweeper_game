@@ -34,6 +34,7 @@ class Grille():
                 2 - difficile, 30x16, 99 bombes
         """
         self.difficulte = difficulte
+        self.cases_decouvertes = 0
         
         # Choix de config en fonction de la difficulté
         if difficulte == 0:
@@ -135,6 +136,18 @@ class Grille():
         
         case_depart.decouvrir()                        
          
+    def verifier_victoire(self):
+        total_cases = self.taille[0]*self.taille[1]
+        cases_decouvertes = 0
+        
+        if self.cases_decouvertes == total_cases - self.bombe:
+            self.victoire()
+            
+    def victoire(self):
+        print("\n Victoire !")
+        self.afficher_solution()
+        sys.exit()            
+                
         
 
 ### Définition d'une case de jeu ###
@@ -203,6 +216,7 @@ class CaseVide(Case):
             return
         
         self.decouverte = True
+        self.grille.cases_decouvertes += 1
         
         # Au cas-où ça n'a pas marché avant
         if self.nbr_bombes_voisines is None:
@@ -219,6 +233,9 @@ class CaseVide(Case):
             for j in range(y-1, y+2):
                 if (0 <= i < self.grille.taille[0]) and (0 <= j < self.grille.taille[1]) and (i,j) != (x,y):
                     self.grille.grille[i,j].decouvrir()
+                    
+        self.grille.verifier_victoire()
+        
     
     def ajouter_drapeau(self):
         self.drapeau = 1 - self.drapeau
