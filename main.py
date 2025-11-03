@@ -26,7 +26,7 @@ def jouer():
     
     while True: 
         g.afficher()
-        action = input("Action (d = découvrir, p = drapeau, q = quitter) : ")
+        action = input("Action (r = révéler, d = drapeau, q = quitter) : ")
         if action == 'q':
             print("Adieu.")
             break
@@ -38,12 +38,12 @@ def jouer():
             
         case = g.grille[x,y]
         
-        if action == "d":
+        if action == "r":
             case.decouvrir()
-        elif action == "p":
+        elif action == "d":
             case.ajouter_drapeau()
         else:
-            print("Action invalide.")
+            print("Action inalide.")
         
 if __name__ == "__main__":
     jouer()
