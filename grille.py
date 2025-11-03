@@ -7,8 +7,8 @@ Created on Fri Oct 24 09:05:11 2025
 
 ### Imports ###
 import numpy as np
+import sys
 from abc import abstractmethod
-
 
 ### Définition d'une grille de jeu ###
 
@@ -149,17 +149,18 @@ class CaseBombe(Case):
         super().__init__(position, grille, drapeau)
         
     def decouvrir(self):
-        #terminer la partie sauf s'il y a déjà un drapeau = True 
+        # Ne peut être découverte si marquée par un drapeau
         if self.drapeau == 1:
             print(f"Case {self.position} marquée, ne peut être découverte")
+            return
+        
         else: 
-            print(f"MACRON EXPLOSION (perdu nullos)")
+            print(f"Loooooooser (perdu)")
             self.decouverte = True
             self.grille.afficher()
-            exit()
+            sys.exit()
             
     def ajouter_drapeau(self):
-        #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = 1 - self.drapeau
         
     
@@ -174,15 +175,19 @@ class CaseVide(Case):
     def decouvrir(self):
         if self.drapeau == 1 or self.decouverte :
             return
+        
         self.decouverte = True
         
         # Au cas-où ça n'a pas marché avant
         if self.nbr_bombes_voisines is None:
             self.nbr_bombes_voisines = self.get_nbr_bomb()
+        
+        # Si bombes voisines
         if self.nbr_bombes_voisines > 0:
             print(f"Case {self.position} : {self.nbr_bombes_voisines} bombes voisines.")
+            return
             
-        # Découvrir les cases vides adjointes
+        # Sinon découvrir les cases vides adjointes
         x, y = self.position
         for i in range(x-1, x+2):
             for j in range(y-1, y+2):
@@ -190,11 +195,9 @@ class CaseVide(Case):
                     self.grille.grille[i,j].decouvrir()
     
     def ajouter_drapeau(self):
-        #ajouter un drapeau sur la case, set drapeau = True
         self.drapeau = 1 - self.drapeau
     
     def get_nbr_bomb(self):
-        #return le nombre de bombes environnantes
         x, y = self.position
         voisins = 0
         for i in range(x-1, x+2):
