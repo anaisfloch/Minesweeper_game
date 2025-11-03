@@ -6,8 +6,9 @@ Created on Fri Oct 24 09:05:11 2025
 """
 
 ### Imports ###
-import numpy as np
 import sys
+import random
+import numpy as np
 from abc import abstractmethod
 
 ### Définition d'une grille de jeu ###
@@ -75,6 +76,9 @@ class Grille():
                 if isinstance(case, CaseVide):
                     case.nbr_bombes_voisines = case.get_nbr_bomb()
                     
+        # Découverte initiale automatique de cases
+        self.decouverte_initiale()
+                    
     def afficher(self):
             for i in range(self.taille[0]):
                 ligne = []
@@ -107,7 +111,29 @@ class Grille():
                     ligne.append("?")
             print(" ".join(ligne))
         print() 
-                    
+    
+    def decouverte_initiale(self):
+        # Liste des cases vides
+        vides = []
+        for i in range(self.taille[0]):
+            for j in range(self.taille[1]):
+                case = self.grille[i,j]
+                if isinstance(case, CaseVide) and case.nbr_bombes_voisines == 0:
+                    vides.append(case)
+        
+        # Définition de la case initiale découverte            
+        if len(vides) > 0:
+            case_depart = random.choice(vides)
+        else:
+            voisines = []
+            for i in range(self.taille[0]):
+                for j in range(self.taille[1]):
+                    case = self.grille[i,j]
+                    if isinstance(case, CaseVide):
+                        voisines.append(case)    
+            case_depart = random.choice(voisines)
+        
+        case_depart.decouvrir()                        
          
         
 
