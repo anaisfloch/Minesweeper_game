@@ -17,7 +17,8 @@ class Grille():
     
     def __init__(self, difficulte):
         """Initialise la grille de jeu du démineur avec une certaine 
-        taille et un nombre de bombes en fonction de la difficulté choisie.
+        taille et un nombre de bombes en fonction de la difficulté choisie, 
+        et dévoile automatiquement une partie de la grille.
         
         Paramètres
         ---------
@@ -82,24 +83,35 @@ class Grille():
         self.verifier_victoire()
                     
     def afficher(self):
-            for i in range(self.taille[0]):
-                ligne = []
-                for j in range(self.taille[1]):
-                    c = self.grille[i,j]
-                    if c.drapeau == 1 :
-                        ligne.append("*")
-                    elif not c.decouverte:
-                        ligne.append("_")
-                    elif isinstance(c, CaseBombe):
-                        ligne.append("BOUM")
-                    elif isinstance(c, CaseVide) and c.nbr_bombes_voisines > 0:
-                        ligne.append(str(c.nbr_bombes_voisines))
-                    else:
-                        ligne.append("0")
-                print(" ".join(ligne))
-            print()   
+        """
+        Affiche visuellement les cases de la grille et leur état en temps réel.
+
+        -------
+        """
+        for i in range(self.taille[0]):
+            ligne = []
+            for j in range(self.taille[1]):
+                c = self.grille[i,j]
+                if c.drapeau == 1 :
+                    ligne.append("*")
+                elif not c.decouverte:
+                    ligne.append("_")
+                elif isinstance(c, CaseBombe):
+                    ligne.append("BOUM")
+                elif isinstance(c, CaseVide) and c.nbr_bombes_voisines > 0:
+                    ligne.append(str(c.nbr_bombes_voisines))
+                else:
+                    ligne.append("0")
+            print(" ".join(ligne))
+        print()  
+        
             
     def afficher_solution(self):
+        """
+        Affiche visuellement la solution de la grille.
+
+        -------
+        """
         print("Soluce")
         for i in range(self.taille[0]):
             ligne = []
@@ -115,6 +127,11 @@ class Grille():
         print() 
     
     def decouverte_initiale(self):
+        """
+        Initialise la partie en découvrant des cases automatiquement.
+
+        -------
+        """
         # Liste des cases vides
         vides = []
         for i in range(self.taille[0]):
@@ -138,11 +155,21 @@ class Grille():
         case_depart.decouvrir()                        
          
     def verifier_victoire(self):
+        """
+        Vérifie que toutes les cases vides ne soient pas découvertes.
+
+        -------
+        """
         total_cases = self.taille[0]*self.taille[1]
         if self.cases_decouvertes >= total_cases - self.bombe:
             self.victoire()
             
     def victoire(self):
+        """
+        Renvoie un message de victoire suivi de la fermeture du jeu.
+
+        -------
+        """
         print("\n Victoire !")
         self.afficher_solution()
         sys.exit()            
@@ -154,8 +181,8 @@ class Grille():
 class Case():
     
     def __init__(self, position, grille, drapeau = 0):
-        """Initialise une case de la grille de jeu du démineur dans un 
-        certain état et une position particulière.
+        """Initialise une case de la grille de jeu du démineur à une position 
+        particulière dans une grille.
         
         Paramètres
         ---------
@@ -165,7 +192,7 @@ class Case():
             Matrice à laquelle la case est rattachée.
         drapeau : int
             Indique la présence ou non d'un drapeau sur la case. Par défaut 
-            égal à 0'
+            égal à 0.
         """
         self.drapeau = drapeau
         self.grille = grille
@@ -174,10 +201,18 @@ class Case():
     
     @abstractmethod
     def decouvrir(self):
+        """
+        Révéler la case sélectionnée, sauf si elle présente un drapeau.
+
+        """
         pass
     
     @abstractmethod
     def ajouter_drapeau(self):
+        """
+        Ajouter un drapeau sur la case sélectionnée ou le retirer si un drapeau est déjà présent.
+
+        """
         pass
 
 
@@ -239,7 +274,16 @@ class CaseVide(Case):
     def ajouter_drapeau(self):
         self.drapeau = 1 - self.drapeau
     
+    
     def get_nbr_bomb(self):
+        """
+        Donne le nombre de bombes présentes dans le voisinage immédiat de la case sélectionnée.
+
+        Returns
+        -------
+        voisins : int
+            Nombre de bombes présentes dans le voisinage immédiat.
+        """
         x, y = self.position
         voisins = 0
         for i in range(x-1, x+2):

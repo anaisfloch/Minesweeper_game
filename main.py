@@ -9,12 +9,13 @@ from grille import Grille
 
 def jouer():
     """
-    Permet de lancer une partie de Minesweeper
+    Permet de lancer une partie de Minesweeper.
     -------
     """
     print(" ====== MINESWEEPER ====== ")
     print("Difficultés : 0 => facile (8x8, 10 bombes), 1 => moyen (16x16, 40 bombes), 2 => difficile (30x16, 99 bombes)")
     
+    # Choix de la difficulté pour le joueur
     while True:
         try:
             difficulte = int(input("Choisissez la difficulté :"))
@@ -25,9 +26,11 @@ def jouer():
         except ValueError:
             print("Tu fais n'importe quoi recommence.")
     
+    # Génération de la grille et affichage de la solution
     g = Grille(difficulte)
     g.afficher_solution()
     
+    # Actions du joueur
     while True: 
         g.afficher()
         action = input("Action (r = révéler, d = drapeau, q = quitter) : ")
