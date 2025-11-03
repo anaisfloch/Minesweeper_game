@@ -8,6 +8,10 @@ Created on Fri Oct 24 14:14:08 2025
 from grille import Grille
 
 def jouer():
+    """
+    Permet de lancer une partie de Minesweeper
+    -------
+    """
     print(" ====== MINESWEEPER ====== ")
     print("Difficultés : 0 => facile (8x8, 10 bombes), 1 => moyen (16x16, 40 bombes), 2 => difficile (30x16, 99 bombes)")
     
