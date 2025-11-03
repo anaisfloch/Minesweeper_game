@@ -79,6 +79,7 @@ class Grille():
                     
         # Découverte initiale automatique de cases
         self.decouverte_initiale()
+        self.verifier_victoire()
                     
     def afficher(self):
             for i in range(self.taille[0]):
@@ -138,9 +139,7 @@ class Grille():
          
     def verifier_victoire(self):
         total_cases = self.taille[0]*self.taille[1]
-        cases_decouvertes = 0
-        
-        if self.cases_decouvertes == total_cases - self.bombe:
+        if self.cases_decouvertes >= total_cases - self.bombe:
             self.victoire()
             
     def victoire(self):
@@ -217,6 +216,7 @@ class CaseVide(Case):
         
         self.decouverte = True
         self.grille.cases_decouvertes += 1
+        self.grille.verifier_victoire()
         
         # Au cas-où ça n'a pas marché avant
         if self.nbr_bombes_voisines is None:
@@ -234,7 +234,6 @@ class CaseVide(Case):
                 if (0 <= i < self.grille.taille[0]) and (0 <= j < self.grille.taille[1]) and (i,j) != (x,y):
                     self.grille.grille[i,j].decouvrir()
                     
-        self.grille.verifier_victoire()
         
     
     def ajouter_drapeau(self):
