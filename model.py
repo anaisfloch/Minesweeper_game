@@ -176,11 +176,4 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
             self.close()
         
     
-    
-if __name__=="__main__":
-    app = QtWidgets.QApplication([])
-    window = Window()
-    window.show()
-    sys.exit(app.exec())
-        
         
