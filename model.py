@@ -153,10 +153,16 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
     def check_victoire(self):
         total_cases = self.grille_obj.taille[0] * self.grille_obj.taille[1]
         bombes = self.grille_obj.bombe
-        decouvertes = """"""
+        decouvertes = 0
         
-        if self.grille_obj.cases_decouvertes >= total_cases - bombes:
-            return True
+        for i in range(self.grille_obj.taille[0]):
+            for j in range(self.grille_obj.taille[1]):
+                case = self.grille_obj.grille[i, j]
+                if case.decouverte:
+                    decouvertes += 1
+        return decouvertes == (total_cases - bombes)
+    
+    
         
     def reveal_all(self):
         for i in range(self.grille_obj.taille[0]):
