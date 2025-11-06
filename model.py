@@ -56,7 +56,7 @@ class Ui_Dialog(object):
         self.difficulty_box_choice = QtWidgets.QComboBox(Dialog)
         self.difficulty_box_choice.setGeometry(QtCore.QRect(140, 90, 200, 22))
         self.difficulty_box_choice.setObjectName("difficulty_box_choice")
-        self.difficulty_box_choice.addItem(["Facile","Moyen", "Difficile"])
+        self.difficulty_box_choice.addItems(["Facile","Moyen", "Difficile"])
         
         # Bouton valider
         self.button_validate_difficulty = QtWidgets.QPushButton(Dialog)
@@ -77,7 +77,7 @@ class Ui_Dialog(object):
 
 
 
-class Window(QtWidgets.Qdialog, Ui_Dialog):
+class Window(QtWidgets.QDialog, Ui_Dialog):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -101,7 +101,7 @@ class Window(QtWidgets.Qdialog, Ui_Dialog):
                 case.setFixedSize(35, 35)
                 case.setStyleSheet("background-color: lightgray;")
                 case.clicked.connect(lambda _, x = i, y = j: self.handle_left_click(x, y))
-                case.setContextMenuPolice(QtCore.Qt.CustomContextMenu)
+                case.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
                 case.customContextMenuRequested.connect(lambda _, x = i, y = j: self.handle_right_click(x, y))
                 self.grid.addWidget(case, i, j)
                 
