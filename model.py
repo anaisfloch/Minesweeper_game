@@ -106,17 +106,20 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
         
         case = self.grille_obj.grille[x, y]
         if isinstance(case, CaseBombe):
-            self.message("PERDUUUUUU ça a explosé ou quoi")
             self.reveal_all()
+            self.message("PERDUUUUUU ça a explosé ou quoi")
             self.partie_terminee = True
-        else:
-            case.decouvrir()
-            self.update_cases()
+            return
+        
+        
+        case.decouvrir()
+        self.update_cases()
             
-            if self.check_victoire():
-                self.message("GG Well played")
-                self.reveal_all()
-                self.partie_terminee = True
+        if self.check_victoire():
+            self.reveal_all()
+            self.message("GG Well played")
+            self.partie_terminee = True
+            
         
     def handle_right_click(self, x, y):
         if self.partie_terminee:
@@ -142,14 +145,16 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
                     bouton.setStyleSheet("background-color: #FF0000; font-weight: bold; ")
                 elif case.nbr_bombes_voisines > 0:
                     bouton.setText(str(case.nbr_bombes_voisines))
-                    bouton.setStyleSheet("background-color: #Q8E6C9; font-weight: bold; ")
+                    bouton.setStyleSheet("background-color: #C8E6C9; font-weight: bold; ")
                 else :
                     bouton.setText("")
-                    bouton.setStyleSheet("background-color: #Q8E6C9; font-weight: bold; ")
+                    bouton.setStyleSheet("background-color: #C8E6C9; font-weight: bold; ")
                     
     def check_victoire(self):
         total_cases = self.grille_obj.taille[0] * self.grille_obj.taille[1]
         bombes = self.grille_obj.bombe
+        decouvertes = """"""
+        
         if self.grille_obj.cases_decouvertes >= total_cases - bombes:
             return True
         
@@ -167,12 +172,13 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
         message.setText(texte)
         message.setIcon(QtWidgets.QMessageBox.Information)
         message.addButton("Rejouer", QtWidgets.QMessageBox.AcceptRole)
-        message.addButton("Rejouer", QtWidgets.QMessageBox.RejectRole)
-        choix = message.exec_()
+        message.addButton("Quitter", QtWidgets.QMessageBox.RejectRole)
         
-        if choix == 0:
+        message.exec_()
+        
+        if message.clickedButton() == "Rejouer":
             self.start_game()
-        else:
+        elif message.clickedButton() == "Quitter":
             self.close()
         
     
