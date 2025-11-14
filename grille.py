@@ -162,7 +162,8 @@ class Grille():
         """
         total_cases = self.taille[0]*self.taille[1]
         if self.cases_decouvertes >= total_cases - self.bombe:
-            self.victoire()
+            return self.victoire()
+        return False
             
     def victoire(self):
         """
@@ -172,7 +173,7 @@ class Grille():
         """
         print("\n Victoire !")
         self.afficher_solution()
-        sys.exit()            
+        return True           
                 
         
 
