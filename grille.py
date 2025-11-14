@@ -225,14 +225,10 @@ class CaseBombe(Case):
     def decouvrir(self):
         # Ne peut être découverte si marquée par un drapeau
         if self.drapeau == 1:
-            print(f"Case {self.position} marquée, ne peut être découverte")
             return
-        
-        else: 
-            print(f"Loooooooser (perdu)")
-            self.decouverte = True
-            self.grille.afficher()
-            sys.exit()
+        self.decouverte = True
+        return
+           
             
     def ajouter_drapeau(self):
         self.drapeau = 1 - self.drapeau

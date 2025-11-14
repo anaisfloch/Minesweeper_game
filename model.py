@@ -21,7 +21,7 @@ class Ui_Dialog(object):
         self.grid.setObjectName("grid")
         
         # Zone titre
-        self.title_text = QtWidgets.QPlainTextEdit(Dialog)
+        self.title_text = QtWidgets.QLabel(Dialog)
         self.title_text.setGeometry(QtCore.QRect(40, 20, 331, 51))
         font = QtGui.QFont()
         font.setFamily("Yu Gothic UI")
@@ -29,18 +29,17 @@ class Ui_Dialog(object):
         font.setBold(True)
         font.setWeight(75)
         self.title_text.setFont(font)
-        self.title_text.setAutoFillBackground(True)
-        self.title_text.setObjectName("title_text")
+        self.title_text.setText("Minesweeper Game")
+
         
         ### Boite de difficulté
         # Texte
-        self.difficulty_text = QtWidgets.QPlainTextEdit(Dialog)
+        self.difficulty_text = QtWidgets.QLabel(Dialog)
         self.difficulty_text.setGeometry(QtCore.QRect(40, 80, 100, 31)) #150 pour la largeur de la boite text
         font = QtGui.QFont("Yu Gothic UI", 11, QtGui.QFont.Bold)
         font.setFamily("Yu Gothic UI")
         self.difficulty_text.setFont(font)
-        self.difficulty_text.setAutoFillBackground(True)
-        self.difficulty_text.setObjectName("difficulty_text")
+        self.difficulty_text.setText("Difficulté :")
         
         # Choix difficulté
         self.difficulty_box_choice = QtWidgets.QComboBox(Dialog)
@@ -60,8 +59,8 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Démineur"))
-        self.title_text.setPlainText(_translate("Dialog", "Minesweeper Game"))
-        self.difficulty_text.setPlainText(_translate("Dialog", "Difficulté :"))
+        self.title_text.setText(_translate("Dialog", "Minesweeper Game"))
+        self.difficulty_text.setText(_translate("Dialog", "Difficulté :"))
         self.button_validate_difficulty.setText(_translate("Dialog", "OK"))
 
 
@@ -78,24 +77,27 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
         
     def start_game(self):
         difficulte = self.difficulty_box_choice.currentIndex()
-        self.grille_obj = Grille(difficulte)
         self.partie_terminee = False
+        self.grille_obj = Grille(difficulte)
         
-        for i in reversed(range(self.grid.count())):
-            widget = self.grid.itemAt(i).widget()
+        # Nettoyer grille précédente
+        while self.grid.count():
+            item = self.grid.takeAt(0)
+            widget = item.widget()
             if widget is not None:
                 widget.deleteLater()
                 
-                
+        
+        # Reconstruire grille        
         for i in range(self.grille_obj.taille[0]):
             for j in range(self.grille_obj.taille[1]):
-                case = QtWidgets.QPushButton("")
-                case.setFixedSize(35, 35)
-                case.setStyleSheet("background-color: lightgray;")
-                case.clicked.connect(lambda _, x = i, y = j: self.handle_left_click(x, y))
-                case.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-                case.customContextMenuRequested.connect(lambda _, x = i, y = j: self.handle_right_click(x, y))
-                self.grid.addWidget(case, i, j)
+                button = QtWidgets.QPushButton("")
+                button.setFixedSize(35, 35)
+                button.setStyleSheet("background-color: lightgray;")
+                button.clicked.connect(lambda _, x=i, y=j: self.handle_left_click(x, y))
+                button.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                button.customContextMenuRequested.connect(lambda _, x=i, y=j: self.handle_right_click(x, y))
+                self.grid.addWidget(button, i, j)
                 
         self.update_cases()
         
@@ -107,7 +109,7 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
         case = self.grille_obj.grille[x, y]
         if isinstance(case, CaseBombe):
             self.reveal_all()
-            self.message("PERDUUUUUU ça a explosé ou quoi")
+            self.message("Défaite", "PERDUUUUUU ça a explosé ou quoi")
             self.partie_terminee = True
             return
         
@@ -117,7 +119,7 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
             
         if self.check_victoire():
             self.reveal_all()
-            self.message("GG Well played")
+            self.message("Victoire", "GG Well played")
             self.partie_terminee = True
             
         
@@ -170,6 +172,7 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
                 case = self.grille_obj.grille[i, j]
                 case.decouverte = True
         self.update_cases()
+        self.partie_terminee = True
         
         
     def message(self, titre, texte):
@@ -177,14 +180,15 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
         message.setWindowTitle(titre)
         message.setText(texte)
         message.setIcon(QtWidgets.QMessageBox.Information)
-        message.addButton("Rejouer", QtWidgets.QMessageBox.AcceptRole)
-        message.addButton("Quitter", QtWidgets.QMessageBox.RejectRole)
+        
+        rejouer = message.addButton("Rejouer", QtWidgets.QMessageBox.AcceptRole)
+        quitter = message.addButton("Quitter", QtWidgets.QMessageBox.RejectRole)
         
         message.exec_()
         
-        if message.clickedButton() == "Rejouer":
+        if message.clickedButton() == rejouer:
             self.start_game()
-        elif message.clickedButton() == "Quitter":
+        elif message.clickedButton() == quitter:
             self.close()
         
     
