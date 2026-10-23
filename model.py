@@ -132,6 +132,9 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
             return
         
         case = self.grille_obj.grille[x, y] 
+        if case.decouverte:
+            return
+        
         case.drapeau = 1 - case.drapeau
         self.update_cases()
         
