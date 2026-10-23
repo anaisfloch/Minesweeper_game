@@ -28,7 +28,7 @@ def jouer():
     
     # Génération de la grille et affichage de la solution
     g = Grille(difficulte)
-    g.afficher_solution()
+    #g.afficher_solution()
     
     # Actions du joueur
     while True: 
