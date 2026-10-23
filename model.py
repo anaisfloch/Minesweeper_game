@@ -85,6 +85,9 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
             item = self.grid.takeAt(0)
             widget = item.widget()
             if widget is not None:
+                widget.setEnabled(False)
+                widget.hide()
+                widget.setParent(None)
                 widget.deleteLater()
                 
         
@@ -93,6 +96,7 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
             for j in range(self.grille_obj.taille[1]):
                 button = QtWidgets.QPushButton("")
                 button.setFixedSize(35, 35)
+                button.setEnabled(True)
                 button.setStyleSheet("background-color: lightgray;")
                 button.clicked.connect(lambda _, x=i, y=j: self.handle_left_click(x, y))
                 button.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -186,9 +190,11 @@ class Window(QtWidgets.QDialog, Ui_Dialog):
         
         message.exec_()
         
-        if message.clickedButton() == rejouer:
-            self.start_game()
-        elif message.clickedButton() == quitter:
+        bouton_clique = message.clickedButton()
+        
+        if bouton_clique == rejouer:
+            QtCore.QTimer.singleShot(0, self.start_game())
+        elif bouton_clique == quitter:
             self.close()
         
     
